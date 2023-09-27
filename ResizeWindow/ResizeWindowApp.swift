@@ -10,8 +10,13 @@ import SwiftUI
 @main
 struct ResizeWindowApp: App {
     var body: some Scene {
-        WindowGroup {
+        MenuBarExtra(content: {
             ContentView()
-        }
+        }, label: {
+            HStack {
+                Image(systemName: "macwindow.on.rectangle")
+            }
+        })
+        .menuBarExtraStyle(.window)
     }
 }
