@@ -13,9 +13,15 @@ struct ResizeWindowApp: App {
         MenuBarExtra(content: {
             ContentView()
         }, label: {
-            HStack {
-                Image(systemName: "macwindow.on.rectangle")
-            }
+            let image: NSImage = {
+                let ratio = $0.size.height / $0.size.width
+                $0.size.height = 18
+                $0.size.width = 18 / ratio
+                $0.isTemplate = true  // 设置为模板图像
+                return $0
+            }(NSImage(named: "MenuBarIcon")!)
+
+            Image(nsImage: image)
         })
         .menuBarExtraStyle(.window)
     }

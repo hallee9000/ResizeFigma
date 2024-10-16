@@ -8,9 +8,22 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var width: String = "1080"
-    @State private var height: String = "608"
+    @State private var width: String = "1728"
+    @State private var height: String = "1117"
     @State private var isCentered = false
+    @State private var selectedSizeOption = "MacBook Pro 16\" (1728 x 1117)"  // 初始选择
+    @State private var isCustomSize = false // 是否为自定义尺寸
+    
+    var sizeOptions = [
+        "MacBook Pro 16\" (1728 x 1117)",
+        "MacBook Pro 14\" (1512 x 982)",
+        "MacBook Air (1280 x 832)",
+        "iPad 13\" (1032 x 1376)",
+        "iPad 12.9\" (1024 x 1366)",
+        "iPad 11\" (834 x 1210)",
+        "Custom"
+    ]
+
     var numberFormatter: NumberFormatter {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
@@ -18,19 +31,41 @@ struct ContentView: View {
     }
     var body: some View {
         VStack {
-            HStack {
-                Text("Width:")
-                TextField("Width", text: $width, onCommit: {
-                    checkForNumericInput(input: &width)
-                })
-                .textFieldStyle(RoundedBorderTextFieldStyle())
+            // 选择预设窗口尺寸
+            Picker("Window Size", selection: $selectedSizeOption) {
+                ForEach(sizeOptions, id: \.self) { option in
+                    Text(option)
+                }
             }
-            HStack {
-                Text("Height:")
-                TextField("Height", text: $height, onCommit: {
-                    checkForNumericInput(input: &height)
-                })
-                .textFieldStyle(RoundedBorderTextFieldStyle())
+            .pickerStyle(MenuPickerStyle())
+            .onChange(of: selectedSizeOption) { newValue in
+                if newValue == "Custom" {
+                    isCustomSize = true
+                } else {
+                    isCustomSize = false
+                    let dimensions = newValue.split(separator: "(").last?.split(separator: "x").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+                    if let widthValue = dimensions?.first, let heightValue = dimensions?.last?.replacingOccurrences(of: ")", with: "") {
+                        width = widthValue
+                        height = heightValue
+                    }
+                }
+            }
+            // 当选择 "Custom" 时显示输入框
+            if isCustomSize {
+                HStack {
+                    Text("Width:")
+                    TextField("Width", text: $width, onCommit: {
+                        checkForNumericInput(input: &width)
+                    })
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                }
+                HStack {
+                    Text("Height:")
+                    TextField("Height", text: $height, onCommit: {
+                        checkForNumericInput(input: &height)
+                    })
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                }
             }
             Toggle(isOn: $isCentered) {
                 Text("Centered window")

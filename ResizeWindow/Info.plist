@@ -22,6 +22,8 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>LSUIElement</key>
+	<true/>
 	<key>NSAccessibilityApplicationUsageDescription</key>
 	<string>This app requires access to control other applications to perform window management.</string>
 	<key>NSAppTransportSecurity</key>
